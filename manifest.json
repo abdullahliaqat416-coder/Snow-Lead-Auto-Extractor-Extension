@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Snowlead Auto-Pilot Extractor",
+  "version": "4.0",
+  "description": "Continuous Auto-Scrolling & Extracting LinkedIn Bot.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "*://*.linkedin.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Open Snowlead Auto-Pilot",
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}

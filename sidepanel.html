@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Snowlead Auto-Pilot</title>
+<style>
+  /* =========================================
+     1. BASE THEME & BACKGROUND
+     ========================================= */
+  body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #090a0f; /* Deep dark background exactly like image */
+    color: #ffffff;
+    height: 100vh; overflow: hidden; position: relative;
+    user-select: none;
+    display: flex; flex-direction: column;
+  }
+
+  /* =========================================
+     2. SLOW SNOWFALL ANIMATION (BACKGROUND)
+     ========================================= */
+  .snow-container {
+    position: absolute; top: -100px; left: 0; width: 100%; height: calc(100vh + 100px);
+    z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  .snow {
+    position: absolute; background: rgba(255, 255, 255, 0.4); border-radius: 50%;
+    animation: fall linear infinite; box-shadow: 0 0 5px rgba(255,255,255,0.4);
+  }
+  /* Generating multiple snowflakes with varying speeds and sizes */
+  .s1 { width: 4px; height: 4px; left: 10%; animation-duration: 12s; animation-delay: 0s; }
+  .s2 { width: 3px; height: 3px; left: 25%; animation-duration: 15s; animation-delay: 2s; }
+  .s3 { width: 5px; height: 5px; left: 40%; animation-duration: 10s; animation-delay: 4s; }
+  .s4 { width: 2px; height: 2px; left: 60%; animation-duration: 18s; animation-delay: 1s; }
+  .s5 { width: 4px; height: 4px; left: 75%; animation-duration: 14s; animation-delay: 5s; }
+  .s6 { width: 3px; height: 3px; left: 90%; animation-duration: 16s; animation-delay: 3s; }
+  
+  @keyframes fall {
+    0% { transform: translateY(-10px) translateX(0px); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
+  }
+
+  /* =========================================
+     3. BOTTOM NEBULA/ORB ANIMATION (FADE EFFECT)
+     ========================================= */
+  .bottom-nebula {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 250px;
+    z-index: 2; pointer-events: none;
+    /* Fades smoothly into the background, no hard box */
+    background: linear-gradient(to bottom, transparent 0%, rgba(9, 10, 15, 0.2) 100%);
+  }
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(30px);
+    animation: breathe ease-in-out infinite alternate;
+  }
+  .orb-1 {
+    width: 120px; height: 120px; background: rgba(100, 80, 255, 0.15);
+    bottom: -20px; right: 10%; animation-duration: 4s;
+  }
+  .orb-2 {
+    width: 80px; height: 80px; background: rgba(140, 100, 255, 0.1);
+    bottom: 50px; left: 20%; animation-duration: 6s; animation-delay: 1s;
+  }
+  
+  /* Little floating stars in the nebula */
+  .star {
+    position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%;
+    box-shadow: 0 0 4px #fff; animation: twinkle 3s infinite alternate;
+  }
+  .st1 { bottom: 80px; right: 30%; animation-delay: 0s; }
+  .st2 { bottom: 40px; left: 40%; animation-delay: 1s; }
+  .st3 { bottom: 120px; left: 15%; animation-delay: 2s; }
+
+  @keyframes breathe { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+  @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+
+  /* =========================================
+     4. FOREGROUND UI & BUTTONS
+     ========================================= */
+  .ui-container {
+    position: relative; z-index: 10; padding: 20px 15px; 
+    flex-grow: 1; display: flex; flex-direction: column;
+  }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 30px;
+    font-size: 14px; font-weight: 600; color: #fff;
+  }
+  .header-dot { width: 6px; height: 6px; background: #6c5ce7; border-radius: 50%; box-shadow: 0 0 8px #6c5ce7; }
+
+  /* Counter Section (Glowing Circle) */
+  .counter-wrapper {
+    display: flex; flex-direction: column; align-items: center; margin-bottom: 30px;
+  }
+  .counter-label {
+    font-size: 10px; color: #8b93a8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .glow-circle {
+    width: 75px; height: 75px; border-radius: 50%;
+    background: linear-gradient(135deg, #8e90ff, #5759ff);
+    box-shadow: 0 0 25px rgba(87, 89, 255, 0.4), inset 0 0 10px rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  /* Status Pill */
+  .status-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px; padding: 6px 16px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: #d0d2d6;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #6c5ce7; box-shadow: 0 0 5px #6c5ce7; }
+
+  /* Buttons */
+  button {
+    width: 100%; padding: 14px; margin-bottom: 12px; border-radius: 10px;
+    font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  #btnStart {
+    background: linear-gradient(90deg, #8e90ff, #5759ff);
+    color: white; border: none;
+    box-shadow: 0 4px 15px rgba(87, 89, 255, 0.25);
+  }
+  #btnStart:active:not(:disabled) { transform: scale(0.98); box-shadow: 0 2px 5px rgba(87, 89, 255, 0.25); }
+
+  .dark-btn {
+    background: #111218; color: #d0d2d6;
+    border: 1px solid #232533;
+  }
+  .dark-btn:hover:not(:disabled) { background: #161822; border-color: #33364a; }
+  .dark-btn:active:not(:disabled) { transform: scale(0.98); }
+
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+</style>
+</head>
+<body>
+
+  <!-- Background Snow Layer -->
+  <div class="snow-container">
+    <div class="snow s1"></div><div class="snow s2"></div>
+    <div class="snow s3"></div><div class="snow s4"></div>
+    <div class="snow s5"></div><div class="snow s6"></div>
+  </div>
+
+  <!-- Bottom Fading Nebula Layer -->
+  <div class="bottom-nebula">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="star st1"></div><div class="star st2"></div><div class="star st3"></div>
+  </div>
+
+  <!-- Foreground UI (Strictly follows the image structure) -->
+  <div class="ui-container">
+    <div class="header">
+      <div class="header-dot"></div> Auto-pilot extractor
+    </div>
+
+    <div class="counter-wrapper">
+      <div class="counter-label">Total profiles saved</div>
+      <div class="glow-circle" id="uiCount">0</div>
+      <div class="status-pill">
+        <div class="status-dot" id="uiDot"></div>
+        <span id="uiStatus">Ready to start</span>
+      </div>
+    </div>
+
+    <button id="btnStart">▶ Start auto-pilot</button>
+    <button id="btnStop" class="dark-btn" disabled>⏸ Stop bot</button>
+    <button id="btnExport" class="dark-btn" disabled>⬇ Download csv</button>
+    <button id="btnClear" class="dark-btn">🗑 Clear memory</button>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
