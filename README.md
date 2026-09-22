@@ -1,3 +1,11 @@
+
+
+https://github.com/user-attachments/assets/12003ab5-3aaa-4018-91b5-0ad1c744691f
+
+
+
+
+
 <div align="center">
 
   <!-- Yahan icon.png ko logo ke tor par use kiya gaya hai -->
@@ -15,7 +23,7 @@
   </p>
 
   <!-- Yahan aap apni demo video ya GIF ka link dalenge -->
-  <img src="https://via.placeholder.com/800x400/090a0f/5759ff?text=Upload+Your+Demo+GIF/Video+Here" alt="Snowlead Demo" width="80%" style="border-radius: 10px; box-shadow: 0px 4px 15px rgba(0,0,0,0.5);" />
+
 
 </div>
 
